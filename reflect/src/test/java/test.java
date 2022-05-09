@@ -1,10 +1,7 @@
 import del.ccc;
 import org.junit.jupiter.api.Test;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 
 public class test {
 
@@ -177,9 +174,9 @@ public class test {
 
 
         Integer[][] c4 = new Integer[][]{//这种方式跟静态赋值一样，获得的是不规则的二维数组
-                {Integer.valueOf(1),Integer.valueOf(2)},
-                {Integer.valueOf(4),Integer.valueOf(5),Integer.valueOf(6)},
-                {Integer.valueOf(7),Integer.valueOf(8)},
+                {Integer.valueOf(1), Integer.valueOf(2)},
+                {Integer.valueOf(4), Integer.valueOf(5), Integer.valueOf(6)},
+                {Integer.valueOf(7), Integer.valueOf(8)},
                 {}
         };
 
@@ -200,10 +197,94 @@ public class test {
 
         for (int i = 0; i < c5.length; i++) {
             for (int j = 0; j < c5[i].length; j++) {
-                    System.out.print(c5[i][j]);
+                System.out.print(c5[i][j]);
             }
             System.out.println();
         }
 
+        System.out.println("---------------");
+        //测试动态加载
+        //Class c7 = Class.forName("SB");  命名没有 SB这个类
+
     }
+
+    @Test
+    public void test2() throws NoSuchFieldException, NoSuchMethodException {
+        //反射api测试
+        Class<cd> c = cd.class;
+        //获取全类名
+        System.out.println(c.getName());
+        //获取简单类名
+        System.out.println(c.getSimpleName());
+        //获取父类的变量 不行
+       /* Field field = c.getField("fa");
+        field.setAccessible(true);
+        System.out.println(field.getName());*/
+        //但是可以通过返回数组 拿到
+
+        //拿到包
+        System.out.println(c.getPackage());
+        //拿到父类
+        System.out.println(c.getSuperclass().getName());
+        //拿到接口
+        System.out.println(c.getInterfaces().getClass());
+        //拿到注解
+        System.out.println( c.getAnnotations());
+
+        //返回访问修饰符 对于field 默认0 public 1 private 2 protect 4
+        // static 8 final 16
+        //返回值是各种权限组合的值
+
+        //通过getModifiers()获取
+        Field field = c.getDeclaredField("d");
+        field.setAccessible(true);
+        System.out.println( field.getModifiers());
+
+        field = c.getField("s");
+        System.out.println( field.getModifiers());
+
+        //返回类的属性 所对应的属性的class  Inter a  返回Integer  返回Integer所对应的字节码
+
+        field = c.getField("d");
+        System.out.println( field.getType());
+
+        //获取方法的返回值类型 getReturnType
+        Method method1 = c.getDeclaredMethod("show");
+        method1.setAccessible(true);
+        System.out.println( method1.getReturnType().getSimpleName());//lang.Interge class对象 在寻找名字
+
+        //获取方法的访问修饰符  getModifiers
+        Method method = c.getDeclaredMethod("show",String.class,int.class,Integer.class);
+        System.out.println( method.getModifiers());
+
+        //以数组的方式获取参数
+        System.out.println("------------------");
+        Parameter[] parameters = method.getParameters();
+        for (Parameter parameter : parameters) {
+            System.out.println(parameter.getParameterizedType());
+            System.out.println( parameter.getName());
+            System.out.println( parameter.getModifiers());
+            System.out.println("------------------");
+        }
+    }
+
+}
+
+class cdF {
+    protected Integer fa;
+}
+
+interface te{
+
+}
+
+@Deprecated
+class cd extends cdF implements te{
+    public static Double d;
+    protected Integer i;
+    public String s;
+
+    protected String show(){return  new String();};
+
+    private  Integer show(String s,int a, Integer b){ return  Integer.valueOf(null);}
 }
