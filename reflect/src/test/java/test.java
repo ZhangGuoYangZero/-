@@ -269,12 +269,35 @@ public class test {
 
         System.out.println("-------私有-----------");
         //扔参数类型是class
-        Constructor constructor =  c.getDeclaredConstructor(Integer.class);
+        Constructor<cd> constructor =  c.getDeclaredConstructor(Integer.class);
         constructor.setAccessible(true);
         //实际运行要给对象 默认不能给null.因为形参接受实参不能为null
         //调用构造器后给一个返回一个宿主对象
-        Object o  = constructor.newInstance(Integer.valueOf(0));
+        cd cd1 = constructor.newInstance(Integer.valueOf(0));
+        System.out.println(cd.class);
+        System.out.println(cd.d);
 
+
+      /* 没有这样的方法参数 父-》子
+       Constructor constructor1  = c.getDeclaredConstructor(Object.class);
+        System.out.println(constructor1);*/
+
+       /* 没有这样的方法参数 子-》父
+       Constructor constructor1 = c.getDeclaredConstructor(String.class);
+        System.out.println(constructor1.getName());*/
+
+
+        System.out.println("-------类和对象-----------");
+        //拿到一个oo对象,由于是调用的公有构造所以不用给破解权限
+        //为什么叫面向对象而不是面向类啊？ 因为类是结构 和对象才是数据的集合
+        Object oo = c.getDeclaredConstructor().newInstance();
+        Field field1  = c.getDeclaredField("d");
+        System.out.println( "原本的值" + field1.get(oo) );
+        field1.set(oo,5.51);
+        System.out.println("现在的值" + field1.get(oo));
+        cd cd = (cd)oo;
+
+        System.out.println("直接通过oo去获取值" + cd.d);
 
     }
 
@@ -295,9 +318,16 @@ class cd extends cdF implements te{
     public String s;
 
     protected String show(){return  new String();};
+
+    protected cd(Object o){
+        System.out.println("保护构造器被调用了");
+    }
+
+    public  cd(){};
+
     private  cd(Integer e){
         System.out.println("私有构造器被调用了");
     };
-
+    //JAVA不支持默认参数值
     private  Integer show(String s,int a, Integer b){ return  Integer.valueOf(null);}
 }
