@@ -209,7 +209,7 @@ public class test {
     }
 
     @Test
-    public void test2() throws NoSuchFieldException, NoSuchMethodException {
+    public void test2() throws NoSuchFieldException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         //反射api测试
         Class<cd> c = cd.class;
         //获取全类名
@@ -266,6 +266,16 @@ public class test {
             System.out.println( parameter.getModifiers());
             System.out.println("------------------");
         }
+
+        System.out.println("-------私有-----------");
+        //扔参数类型是class
+        Constructor constructor =  c.getDeclaredConstructor(Integer.class);
+        constructor.setAccessible(true);
+        //实际运行要给对象 默认不能给null.因为形参接受实参不能为null
+        //调用构造器后给一个返回一个宿主对象
+        Object o  = constructor.newInstance(Integer.valueOf(0));
+
+
     }
 
 }
@@ -280,11 +290,14 @@ interface te{
 
 @Deprecated
 class cd extends cdF implements te{
-    public static Double d;
+    public static Double d = 9.0;
     protected Integer i;
     public String s;
 
     protected String show(){return  new String();};
+    private  cd(Integer e){
+        System.out.println("私有构造器被调用了");
+    };
 
     private  Integer show(String s,int a, Integer b){ return  Integer.valueOf(null);}
 }
